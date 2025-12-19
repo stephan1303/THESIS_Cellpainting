@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
 """
-cp_pipeline_v3_virtualtiles_noleak_wellsplit_maandag.py
-=======================================================
+cp_pipeline_v3_virtualtiles_noleak_wellsplit.py
+=============================================
 
-Zelfde functionaliteit als cp_pipeline_v3_virtualtiles.py, maar MET
-image-/well-niveau splits om data leakage te voorkomen.
+This script provides the same functionality as
+cp_pipeline_v3_virtualtiles.py, but explicitly prevents data leakage
+by performing splits at the image and well level.
 
-Belangrijkste punten:
-- Voor elke drug nemen we de unieke src_image's voor treated (label=1)
-  en MOCK (label=0).
-- We leiden hieruit een 'well' af op basis van de bestandsnaam.
-- Die wells worden per label gesplitst in ongeveer 70% train, 20% val,
-  10% test.
-- ALLE tiles van één well gaan naar dezelfde split (dus niet over
-  train/val/test gemengd).
-- Drugs waarvoor we niet minimaal 1 well in train/val/test hebben
-  voor zowel treated als mock, worden overgeslagen.
-- Daarna wordt zoals eerder met virtuele tiles gewerkt.
+Key points:
+- For each drug, unique source images are collected for treated samples
+  (label = 1) and MOCK/DMSO controls (label = 0).
+- A well identifier is derived from the image filename.
+- Wells are split per label into approximately:
+    70% training, 20% validation, and 10% test.
+- All virtual tiles originating from the same well are assigned to the
+  same split (train / validation / test).
+- Drugs are skipped if they do not contain at least one well per split
+  for both treated and control conditions.
+- After splitting, the pipeline proceeds using virtual tiles as in
+  earlier versions.
 
-CLI-voorbeeld:
+Example CLI usage:
 
-    python cp_pipeline_v3_virtualtiles_noleak_wellsplit_maandag.py \
+    python cp_pipeline_v3_virtualtiles_noleak_wellsplit.py \
       --manifest_csv /scratch-shared/$USER/cellpainting/combined_manifest_from_images.csv \
       --out_root     /scratch-shared/$USER/cellpainting/v3_virtualtiles_run_noleak \
       --models       resnetv2_101 \
